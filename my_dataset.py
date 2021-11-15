@@ -2,7 +2,6 @@ from torch.utils.data import Dataset
 import os
 import SimpleITK as sitk
 import torchio
-from torchio.transforms import ZNormalization, CropOrPad, Compose, Resample, Resize
 
 
 def get_listdir(path):
@@ -43,8 +42,6 @@ class test_dataset(Dataset):
         self.moving_list.sort()
         self.subjects = []
         for fixed_path, moving_path in zip(self.fixed_list, self.moving_list):
-            # fixed_subject = torchio.Subject(source=torchio.ScalarImage(fixed_path))
-            # moving_subject = torchio.Subject(source=torchio.ScalarImage(moving_path))
             subject = torchio.Subject(
                 fixed=torchio.ScalarImage(fixed_path),
                 moving=torchio.ScalarImage(moving_path),

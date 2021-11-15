@@ -9,7 +9,6 @@ from my_dataset import MyDataset
 import voxelmorph as vxm
 from visdom import Visdom
 
-
 # parse the commandline
 parser = argparse.ArgumentParser()
 parser.add_argument('--model-dir', default='models', help='model output directory')
@@ -96,41 +95,37 @@ weights = [1]
 losses += [vxm.losses.Grad('l2', loss_mult=args.int_downsize).loss]
 weights += [args.weight]
 
-# 实例化窗口
-wind = Visdom()
-# 初始化窗口参数
-wind.line([0.], [0.], win='train', opts=dict(title='loss', legend=['loss']))
+# # 实例化窗口
+# wind = Visdom()
+# # 初始化窗口参数
+# wind.line([0.], [0.], win='train', opts=dict(title='loss', legend=['loss']))
 
 for epoch in range(args.initial_epoch, args.epochs):
 
     # save model checkpoint
-    if epoch % 20 == 0:
+    if epoch % 10 == 0:
         model.save(os.path.join(model_dir, '%04d.pt' % epoch))
 
-    epoch_loss = []
-    epoch_total_loss = []
     epoch_step_time = []
+    epoch_total_loss = []
+    image_loss_list = []
+    deformation_loss_list = []
 
     for i, batch in enumerate(train_dataloader):
         step_start_time = time.time()
 
-        # generate inputs (and true outputs) and convert them to tensors
-        inputs, y_true = batch
-        inputs = inputs.to(device).float().unsqueeze(1)
-        y_true = y_true.to(device).float().unsqueeze(1)
+        fixed, moving = batch
+        fixed = fixed.to(device).float().unsqueeze(1)
+        moving = moving.to(device).float().unsqueeze(1)
 
-        # run inputs through the model to produce a warped image and flow field
-        y_pred = model(inputs, y_true)
+        moved, warp = model(moving, fixed)
 
-        # calculate total loss
-        loss = 0
-        loss_list = []
-        for n, loss_function in enumerate(losses):
-            curr_loss = loss_function(y_true, y_pred[0]) * weights[n]
-            loss_list.append(curr_loss.item())
-            loss += curr_loss
+        image_loss = losses[0](fixed, moved) * weights[0]
+        deformation_loss = losses[1](warp) * weights[1]
+        loss = image_loss + deformation_loss
 
-        epoch_loss.append(loss_list)
+        image_loss_list.append(image_loss.item())
+        deformation_loss_list.append(deformation_loss.item())
         epoch_total_loss.append(loss.item())
 
         optimizer.zero_grad()
@@ -140,12 +135,12 @@ for epoch in range(args.initial_epoch, args.epochs):
         # get compute time
         epoch_step_time.append(time.time() - step_start_time)
 
-    wind.line([np.mean(epoch_total_loss)], [epoch + 1], win='train', update='append')
+    # wind.line([np.mean(epoch_total_loss)], [epoch + 1], win='train', update='append')
     epoch_info = 'Epoch %d/%d' % (epoch + 1, args.epochs)
     time_info = '%.4f sec/step' % np.mean(epoch_step_time)
-    losses_info = ', '.join(['%.4e' % f for f in np.mean(epoch_loss, axis=0)])
-    loss_info = 'loss: %.4e  (%s)' % (np.mean(epoch_total_loss), losses_info)
-    print(' - '.join((epoch_info, time_info, loss_info)), flush=True)
+    total_loss_info = 'loss: %.4f' % np.mean(epoch_total_loss)
+    loss_info = '(image_loss: %.4f, deformation_loss: %.4f)' % (np.mean(image_loss_list),np.mean(deformation_loss_list))
+    print(' - '.join((epoch_info, time_info, total_loss_info, loss_info)), flush=True)
 
 # final model save
 model.save(os.path.join(model_dir, '%04d.pt' % args.epochs))
