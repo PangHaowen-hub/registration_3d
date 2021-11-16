@@ -9,7 +9,7 @@ import torchio
 
 if __name__ == '__main__':
 
-    model_path = r'./models/0060.pt'
+    model_path = r'./models/0040.pt'
     fixed_path = r'G:\CT2CECT\registration\fixed_resample_norm'
     moving_path = r'G:\CT2CECT\registration\moving_a_resample_norm'
     dataset = test_dataset(fixed_path, moving_path)
