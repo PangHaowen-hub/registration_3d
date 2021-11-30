@@ -1,13 +1,6 @@
 import torch
-import argparse
 from torch.utils.data import DataLoader
 import numpy as np
-import os
-import tqdm
-import torchio
-from torchio.transforms import ZNormalization, CropOrPad, Compose, Resample, Resize
-import SimpleITK as sitk
-
 import torch.utils.data as data
 import os
 from torchio.data import UniformSampler
@@ -24,7 +17,7 @@ def get_listdir(path):
     return tmp_list
 
 
-class test_dataset(data.Dataset):
+class dataset(data.Dataset):
     def __init__(self, imgs_path):
         self.img_list = get_listdir(imgs_path)
         self.img_list.sort()
@@ -34,15 +27,8 @@ class test_dataset(data.Dataset):
                 source=torchio.ScalarImage(image_path)
             )
             self.subjects.append(subject)
-        self.transforms = self.transform()
 
-        self.test_set = torchio.SubjectsDataset(self.subjects, transform=self.transforms)
-
-    def transform(self):
-        test_transform = Compose([
-            ZNormalization(),
-        ])
-        return test_transform
+        self.test_set = torchio.SubjectsDataset(self.subjects)
 
     def get_shape(self, i):
         return self.subjects[i].shape
@@ -52,7 +38,7 @@ if __name__ == '__main__':
     batch_size = 1
     source_test_dir = r'G:\CT2CECT\registration\fixed'
     save_path = r'G:\CT2CECT\registration\fixed_patch'
-    dataset = test_dataset(source_test_dir)
+    dataset = dataset(source_test_dir)
     patch_overlap = 128, 128, 128
     patch_size = 256
 

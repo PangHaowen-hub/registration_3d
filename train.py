@@ -5,7 +5,7 @@ import time
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
-from my_dataset import MyDataset
+from dataset import MyDataset
 import voxelmorph as vxm
 from visdom import Visdom
 

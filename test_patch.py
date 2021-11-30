@@ -1,6 +1,6 @@
 import numpy as np
 import voxelmorph as vxm
-from my_dataset import MyDataset, test_dataset
+from dataset import MyDataset, test_dataset
 import torch
 from torch.utils.data import DataLoader
 import os
