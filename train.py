@@ -16,12 +16,12 @@ parser.add_argument('--model-dir', default='models', help='model output director
 parser.add_argument('--batch-size', type=int, default=1, help='batch size (default: 1)')
 parser.add_argument('--epochs', type=int, default=1500,
                     help='number of training epochs (default: 1500)')
-parser.add_argument('--load-model', default='./models/0040.pt', help='optional model file to initialize with')
+parser.add_argument('--load-model', default=None, help='optional model file to initialize with')
 # TODO:optional model file to initialize with
-parser.add_argument('--initial-epoch', type=int, default=40,
+parser.add_argument('--initial-epoch', type=int, default=0,
                     help='initial epoch number (default: 0)')
 # TODO:initial epoch number
-parser.add_argument('--lr', type=float, default=1e-4, help='learning rate (default: 1e-4)')
+parser.add_argument('--lr', type=float, default=1e-5, help='learning rate (default: 1e-4)')
 # network architecture parameters
 parser.add_argument('--int-steps', type=int, default=7,
                     help='number of integration steps (default: 7)')
@@ -37,8 +37,8 @@ args = parser.parse_args()
 # fixed_path = r'./data/fixed_resample_norm_patch'
 # moving_path = r'./data/moving_a_resample_norm_patch'
 
-fixed_path = r'G:\CT2CECT\registration\fixed_resample_norm_patch'
-moving_path = r'G:\CT2CECT\registration\moving_a_resample_norm_patch'
+fixed_path = r'G:\CT2CECT\registration\data\cect_a_preprocess_patch'
+moving_path = r'G:\CT2CECT\registration\data\ncct_preprocess_patch'
 
 train_dataset = MyDataset(fixed_path, moving_path)
 train_dataloader = DataLoader(train_dataset,
@@ -94,10 +94,10 @@ weights = [1]
 losses += [vxm.losses.Grad('l2', loss_mult=args.int_downsize).loss]
 weights += [args.weight]
 
-# 实例化窗口
-wind = Visdom()
-# 初始化窗口参数
-wind.line([[0., 0., 0.]], [0.], win='train', opts=dict(title='loss', legend=['loss', 'image_loss', 'deformation_loss']))
+# # 实例化窗口
+# wind = Visdom()
+# # 初始化窗口参数
+# wind.line([[0., 0., 0.]], [0.], win='train', opts=dict(title='loss', legend=['loss', 'image_loss', 'deformation_loss']))
 
 for epoch in range(args.initial_epoch, args.epochs):
 
@@ -134,8 +134,8 @@ for epoch in range(args.initial_epoch, args.epochs):
         # get compute time
         epoch_step_time.append(time.time() - step_start_time)
 
-        wind.line([[np.mean(epoch_total_loss), np.mean(image_loss_list), np.mean(deformation_loss_list)]],
-                  [epoch + i / len(train_dataloader)], win='train', update='append')
+        # wind.line([[np.mean(epoch_total_loss), np.mean(image_loss_list), np.mean(deformation_loss_list)]],
+        #           [epoch + i / len(train_dataloader)], win='train', update='append')
         epoch_info = 'Epoch %d/%d' % (epoch + 1, args.epochs)
         time_info = '%.4f sec/step' % np.mean(epoch_step_time)
         total_loss_info = 'loss: %.4f' % np.mean(epoch_total_loss)

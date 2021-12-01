@@ -8,13 +8,11 @@ import tqdm
 import torchio
 
 if __name__ == '__main__':
-
     model_path = r'./models/0040.pt'
-    fixed_path = r'G:\CT2CECT\registration\fixed_resample_norm'
-    moving_path = r'G:\CT2CECT\registration\moving_a_resample_norm'
+    fixed_path = r'G:\CT2CECT\registration\data\cect_a_preprocess'
+    moving_path = r'G:\CT2CECT\registration\data\ncct_preprocess'
     dataset = test_dataset(fixed_path, moving_path)
-    save_path = r'G:\CT2CECT\registration\moved_a'
-
+    save_path = r'G:\CT2CECT\registration\data'
     device = 'cuda'
     model = vxm.networks.VxmDense.load(model_path, device)
     model.to(device)

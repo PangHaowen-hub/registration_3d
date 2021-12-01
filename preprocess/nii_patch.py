@@ -1,4 +1,5 @@
 import torch
+import tqdm
 from torch.utils.data import DataLoader
 import numpy as np
 import torch.utils.data as data
@@ -36,13 +37,13 @@ class dataset(data.Dataset):
 
 if __name__ == '__main__':
     batch_size = 1
-    source_test_dir = r'G:\CT2CECT\registration\fixed'
-    save_path = r'G:\CT2CECT\registration\fixed_patch'
-    dataset = dataset(source_test_dir)
+    data_path = r'G:\CT2CECT\registration\data\cect_a_preprocess'
+    save_path = r'G:\CT2CECT\registration\data\cect_a_preprocess_patch'
+    dataset = dataset(data_path)
     patch_overlap = 128, 128, 128
     patch_size = 256
 
-    for i, subj in enumerate(dataset.test_set):
+    for subj in tqdm.tqdm(dataset.test_set):
         grid_sampler = torchio.inference.GridSampler(subj, patch_size, patch_overlap)
         patch_loader = torch.utils.data.DataLoader(grid_sampler, batch_size)
         aggregator = torchio.inference.GridAggregator(grid_sampler, 'average')
@@ -54,4 +55,5 @@ if __name__ == '__main__':
             affine = subj['source']['affine']
             output_arr = np.squeeze(input_tensor.numpy(), 0)
             output_image = torchio.ScalarImage(tensor=output_arr, affine=affine)
-            output_image.save(os.path.join(save_path, os.path.join(save_path, str(j) + fullflname)))
+            temp = os.path.join(save_path, fullflname[:3] + str(j).rjust(3, '0') + '.nii.gz')
+            output_image.save(temp)

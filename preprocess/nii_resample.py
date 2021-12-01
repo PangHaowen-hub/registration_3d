@@ -33,8 +33,8 @@ def resample(img_path, save_path):
 
 
 if __name__ == '__main__':
-    img_path = r''
-    save_path = r''
+    img_path = r'G:\CT2CECT\registration\data\cect_a'
+    save_path = r'G:\CT2CECT\registration\data\cect_a_preprocess'
     img_list = get_listdir(img_path)
     img_list.sort()
     for i in tqdm.tqdm(img_list):
