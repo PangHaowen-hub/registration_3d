@@ -15,11 +15,11 @@ def get_listdir(path):
     return tmp_list
 
 
-model_path = r'./models/1500.pt'
+model_path = r'./models/0200.pt'
 
-fixed_path = r'G:\lobe_registration\LL\after\LU_Lobe_resample_pad_norm'
-moving_path = r'G:\lobe_registration\LL\before\rigid_resample_pad_norm'
-save_path = r'G:\lobe_registration\LL\voxelmorph_registrated'
+fixed_path = r'G:\CT2CECT\registration\data\cect_a_preprocess'
+moving_path = r'G:\CT2CECT\registration\data\ncct_preprocess'
+save_path = r'G:\CT2CECT\registration\data\voxelmorph'
 fixed_list = get_listdir(fixed_path)
 moving_list = get_listdir(moving_path)
 

@@ -28,17 +28,17 @@ parser.add_argument('--int-steps', type=int, default=7,
 parser.add_argument('--int-downsize', type=int, default=2,
                     help='flow downsample factor for integration (default: 2)')
 # loss hyperparameters
-parser.add_argument('--image-loss', default='mse',
+parser.add_argument('--image-loss', default='ncc',
                     help='image reconstruction loss - can be mse or ncc (default: mse)')
 parser.add_argument('--lambda', type=float, dest='weight', default=0.01,
                     help='weight of deformation loss (default: 0.01)')
 args = parser.parse_args()
 
-# fixed_path = r'./data/fixed_resample_norm_patch'
-# moving_path = r'./data/moving_a_resample_norm_patch'
+fixed_path = r'./data/cect_a_preprocess'
+moving_path = r'./data/ncct_preprocess'
 
-fixed_path = r'G:\CT2CECT\registration\data\cect_a_preprocess_patch'
-moving_path = r'G:\CT2CECT\registration\data\ncct_preprocess_patch'
+# fixed_path = r'G:\CT2CECT\registration\data\cect_a_preprocess'
+# moving_path = r'G:\CT2CECT\registration\data\ncct_preprocess'
 
 train_dataset = MyDataset(fixed_path, moving_path)
 train_dataloader = DataLoader(train_dataset,

@@ -316,10 +316,10 @@ def get_listdir(path):
 
 
 if __name__ == '__main__':
-    model_path = r'./models/0040.pt'
+    model_path = r'./models/0900.pt'
     fixed_path = r'G:\CT2CECT\registration\data\cect_a_preprocess'
     moving_path = r'G:\CT2CECT\registration\data\ncct_preprocess'
-    save_path = r'G:\CT2CECT\registration\data'
+    save_path = r'G:\CT2CECT\registration\data\voxelmorph'
     fixed_list = get_listdir(fixed_path)
     moving_list = get_listdir(moving_path)
 
