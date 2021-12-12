@@ -10,4 +10,6 @@
 *.sql
 /data
 /models
+/VoxelMorph/logs
+/VoxelMorph/experiments
 *.svg

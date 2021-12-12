@@ -32,8 +32,8 @@ def normalization(img_path, save_path):
 
 
 if __name__ == '__main__':
-    img_path = r'G:\CT2CECT\registration\data\ncct_preprocess'
-    save_path = r'G:\CT2CECT\registration\data\ncct_preprocess'
+    img_path = r'G:\CT2CECT\registration\data\cect_v_preprocess'
+    save_path = r'G:\CT2CECT\registration\data\cect_v_preprocess'
     img_list = get_listdir(img_path)
     img_list.sort()
     for i in tqdm.tqdm(img_list):
